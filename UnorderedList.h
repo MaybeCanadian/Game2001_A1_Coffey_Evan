@@ -7,5 +7,4 @@ class UnorderedList :
 {
 public:
     UnorderedList(int size) : BaseArray<T>(size) {};
-    ~UnorderedList();
 };

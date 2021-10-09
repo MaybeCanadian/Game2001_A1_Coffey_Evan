@@ -10,31 +10,34 @@ template<class T>
 class BaseArray
 {
 public:
-	BaseArray(int size) : p_array(NULL), maxSize(0), growSize(2), num_Elements(0)
+	BaseArray(int size) : p_array(nullptr), maxSize(0), growSize(2), num_Elements(0)
 	{
 		if (size) {
 			maxSize = size;
-			p_array = new T(maxSize);
+			p_array = new T[maxSize];
+
+			memset(p_array, 0, sizeof(T) * maxSize);
 		}
 	}
 
 	~BaseArray() {
-		if (p_array != NULL) {
+		if (p_array != nullptr) {
+
 			delete[] p_array;
-			p_array = NULL;
+			p_array = nullptr;
 		}
 	}
 
 	const T& operator[] (int index)
 	{
-		assert(p_array != NULL && index < num_Elements);
+		assert(p_array != nullptr && index < num_Elements);
 		return p_array[index];
 	}
 
 	virtual int linearSearch(T value) { //returns the index
-		assert(p_array != NULL);
+		assert(p_array != nullptr);
 
-		for (int i = 0; i < num_Elements - 1; i++) {
+		for (int i = 0; i < num_Elements; i++) {
 			if (p_array[i] == value) {
 				return i;
 			}
@@ -43,14 +46,15 @@ public:
 		return -1; // found nothing
 	}
 
-	virtual int getSize() { return num_Elements; }
-	virtual int getMaxSize() { return maxSize; }
-	virtual int getGrowSize() { return growSize; }
+	int getSize() { return num_Elements; }
+	int getMaxSize() { return maxSize; }
+	int getGrowSize() { return growSize; }
 
 	virtual void push(T val) { //adds to the back of the array
-		assert(p_array != NULL);
+		assert(p_array != nullptr);
 
 		if (num_Elements >= maxSize) {
+			cout << "expanding" << endl;
 			expand();
 		}
 
@@ -59,7 +63,7 @@ public:
 	}
 
 	void pop() { //preserves order
-		assert(p_array != NULL);
+		assert(p_array != nullptr);
 
 		if (num_Elements > 0) {
 			num_Elements--;
@@ -68,7 +72,7 @@ public:
 	}
 	
 	virtual bool remove(int index) { //gets rid of one item in the array preserves order
-		assert(p_array != NULL);
+		assert(p_array != nullptr);
 
 		if (index > maxSize || index > num_Elements) {
 			return false;
@@ -87,17 +91,26 @@ public:
 		num_Elements = 0; // makes it think its exmpty so it can be overwritten. date is still there though
 	}
 
-	virtual bool expand() { //expands the array by an ever increasing value
+	virtual int binarySearch(T val) { return -1; };
 
-		T* temp = new T(maxSize + growSize);
-		assert (temp != NULL);
+protected:
+	bool expand() { //expands the array by an ever increasing value
 
+		if (growSize <= 0) {
+			return false;
+		}
+		T* temp = new T[maxSize + growSize];
+		
+		assert(temp != nullptr);
+	
 		memcpy(temp, p_array, sizeof(T) * maxSize);
-
-		delete p_array;
-
+		
+		delete[] p_array;
+	
 		p_array = temp;
-
+		
+		temp = nullptr;
+	
 		maxSize = maxSize + growSize;
 
 		growSize = growSize * 2;
