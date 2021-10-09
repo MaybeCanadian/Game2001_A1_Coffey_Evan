@@ -1,5 +1,10 @@
 #pragma once
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
 
+using namespace std;
 
 template<class T>
 class BaseArray
@@ -14,15 +19,15 @@ public:
 	}
 
 	~BaseArray() {
-		if (p_array != NULL0) {
+		if (p_array != NULL) {
 			delete[] p_array;
 			p_array = NULL;
 		}
 	}
 
-	T& operator[](int index) 
+	const T& operator[] (int index)
 	{
-		assert(p_array != NULL && index <= num_Elements);
+		assert(p_array != NULL && index < num_Elements);
 		return p_array[index];
 	}
 
@@ -38,9 +43,9 @@ public:
 		return -1; // found nothing
 	}
 
-	virtual int getSize() { return num_Elements };
-	virtual int getMaxSize() { return maxSize };
-	virtual int getGrowSize() { return growSize };
+	virtual int getSize() { return num_Elements; }
+	virtual int getMaxSize() { return maxSize; }
+	virtual int getGrowSize() { return growSize; }
 
 	virtual void push(T val) { //adds to the back of the array
 		assert(p_array != NULL);
@@ -52,8 +57,17 @@ public:
 		p_array[num_Elements] = val;
 		num_Elements++;
 	}
+
+	void pop() { //preserves order
+		assert(p_array != NULL);
+
+		if (num_Elements > 0) {
+			num_Elements--;
+		}
+
+	}
 	
-	virtual bool remove(int index) { //gets rid of one item in the array
+	virtual bool remove(int index) { //gets rid of one item in the array preserves order
 		assert(p_array != NULL);
 
 		if (index > maxSize || index > num_Elements) {
@@ -78,7 +92,7 @@ public:
 		T* temp = new T(maxSize + growSize);
 		assert (temp != NULL);
 
-		memcopy(temp, p_array, sizeof(T) * maxSize);
+		memcpy(temp, p_array, sizeof(T) * maxSize);
 
 		delete p_array;
 
@@ -91,10 +105,13 @@ public:
 		return true;
 	}
 
-private: //variables
+protected: //variables
 	T* p_array; //pointer to where array is stored
 	int maxSize; //current max size of array
 	int growSize; //ammount to grow each time
 	int num_Elements; //how mnay things in the array
 };
 
+
+#include "UnorderedList.h"
+#include "OrderedList.h"

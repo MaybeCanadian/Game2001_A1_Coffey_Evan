@@ -143,6 +143,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseArray.h" />
+    <ClInclude Include="OrderedList.h" />
+    <ClInclude Include="UnorderedList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
